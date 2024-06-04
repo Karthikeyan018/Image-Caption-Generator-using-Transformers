@@ -1,1 +1,3 @@
 Transformers
+torch
+PIL
