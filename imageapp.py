@@ -1,5 +1,7 @@
 import streamlit as st
 
+headless = True
+
 try:
     import torch
     from PIL import Image
