@@ -1,7 +1,6 @@
 import streamlit as st
 
-headless = True
-
+# Handle imports
 try:
     import torch
     from PIL import Image
@@ -10,12 +9,18 @@ except ModuleNotFoundError as e:
     st.error(f"Module not found: {e.name}")
     raise
 
-# Load the BLIP model and processor
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
-
+# Check and set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+
+# Load the BLIP model and processor
+@st.cache_resource()
+def load_model_and_processor():
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+    model.to(device)
+    return processor, model
+
+processor, model = load_model_and_processor()
 
 # Function to generate caption
 def generate_caption(image):
