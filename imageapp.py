@@ -1,28 +1,20 @@
 import streamlit as st
+from PIL import Image
+from transformers import BlipProcessor, BlipForConditionalGeneration
+import torch
 
-# Handle imports
-try:
-    import torch
-    from PIL import Image
-    from transformers import BlipProcessor, BlipForConditionalGeneration
-except ModuleNotFoundError as e:
-    st.error(f"Module not found: {e.name}")
-    raise
-
-# Check and set device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-# Load the BLIP model and processor
+# Cache model and processor to reduce memory usage
 @st.cache_resource()
 def load_model_and_processor():
     processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
     model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
-    model.to(device)
     return processor, model
 
 processor, model = load_model_and_processor()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
-# Function to generate caption
+# Generate caption function
 def generate_caption(image):
     inputs = processor(image, return_tensors="pt").to(device)
     out = model.generate(**inputs)
@@ -32,10 +24,8 @@ def generate_caption(image):
 # Streamlit app
 st.title("Image Caption Generator")
 
-# File uploader for image
 uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-# Generate caption button
 if st.button("Generate Caption"):
     if uploaded_image is not None:
         with st.spinner("Generating caption..."):
