@@ -1,3 +1,4 @@
+streamlit
 Transformers
 torch
 PIL
