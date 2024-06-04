@@ -1,3 +1,5 @@
 Transformers
 torch
 PIL
+BlipProcessor
+BlipForConditionalGeneration
