@@ -1,7 +1,12 @@
 import streamlit as st
-from PIL import Image
-from transformers import BlipProcessor, BlipForConditionalGeneration
-import torch
+
+try:
+    import torch
+    from PIL import Image
+    from transformers import BlipProcessor, BlipForConditionalGeneration
+except ModuleNotFoundError as e:
+    st.error(f"Module not found: {e.name}")
+    raise
 
 # Load the BLIP model and processor
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
@@ -36,6 +41,3 @@ if st.button("Generate Caption"):
                 st.error(f"An error occurred: {str(e)}")
     else:
         st.warning("Please upload an image.")
-
-# Run the Streamlit app using the command below
-# streamlit run your_script_name.py
