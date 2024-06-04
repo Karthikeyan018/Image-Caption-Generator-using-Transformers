@@ -1,6 +1,4 @@
-
-Transformers
+streamlit
 torch
-PIL
-BlipProcessor
-BlipForConditionalGeneration
+Pillow
+transformers
